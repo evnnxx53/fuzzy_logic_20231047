@@ -50,14 +50,27 @@ if __name__ == "__main__":
         
         if skor_hasil >= 70:
             print("Hasil: Jaringan SANGAT BAIK")
+            print("Saran: Koneksi optimal. Tidak perlu tindakan perbaikan.")
         elif skor_hasil >= 45:
             print("Hasil: Jaringan CUKUP BAIK")
+            print("Saran: Coba kurangi perangkat yang terhubung atau restart router.")
         else:
             print("Hasil: Jaringan BURUK")
+            print("Saran: Dekatkan perangkat ke router atau hubungi ISP.")
 
         latensi.view()
+        plt.vlines(input_latensi, 0, 1, colors='k', linewidth=3, label='Input User')
+        plt.title(f'Latensi (Input: {input_latensi} ms)')
+        plt.legend()
+
         kecepatan.view()
+        plt.vlines(input_kecepatan, 0, 1, colors='k', linewidth=3, label='Input User')
+        plt.title(f'Kecepatan (Input: {input_kecepatan} Mbps)')
+        plt.legend()
+
         kualitas_jaringan.view(sim=diagnosa_jaringan)
+        plt.title(f'Kualitas Jaringan (Output: {skor_hasil:.2f})')
+
         plt.show()
         
     except ValueError:

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosa Jaringan Fuzzy</title>
+</head>
+<body>
+
+    <h1>Fuzzy Logic Diagnosa Kualitas Jaringan</h1>
+
+    <hr>
+
+    <h3>Input Parameter</h3>
+    <form method="POST" action="/">
+        
+        <label for="latensi">Latensi (0 - 300 ms):</label><br>
+        <input type="range" id="latensi" name="latensi" min="0" max="300" step="1" value="0" oninput="document.getElementById('val_latensi').innerText = this.value">
+        <span id="val_latensi">0</span> ms
+        <br><br>
+
+        <label for="kecepatan">Kecepatan (0 - 100 Mbps):</label><br>
+        <input type="range" id="kecepatan" name="kecepatan" min="0" max="100" step="1" value="0" oninput="document.getElementById('val_kecepatan').innerText = this.value">
+        <span id="val_kecepatan">0</span> Mbps
+        <br><br>
+
+        <button type="submit">Analisis Jaringan</button>
+    </form>
+
+    <hr>
+
+    {% if result %}
+        {% if result.error %}
+            <p style="color: red;">Error: {{ result.error }}</p>
+        {% else %}
+            <h3>Hasil Diagnosa</h3>
+            <p><strong>Kategori:</strong> {{ result.kategori }}</p>
+            <p><strong>Skor:</strong> {{ result.skor }} / 100</p>
+
+            <h4>Saran Perbaikan:</h4>
+            <ul>
+                {% for item in result.saran %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <hr>
+            <h4>Visualisasi Fuzzy:</h4>
+            
+            <p><strong>1. Latensi</strong></p>
+            <img src="data:image/png;base64,{{ result.plot_latensi }}" alt="Grafik Latensi" width="500">
+            
+            <p><strong>2. Kecepatan</strong></p>
+            <img src="data:image/png;base64,{{ result.plot_kecepatan }}" alt="Grafik Kecepatan" width="500">
+            
+            <p><strong>3. Output Kualitas</strong></p>
+            <img src="data:image/png;base64,{{ result.plot_output }}" alt="Grafik Output" width="500">
+            
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
