@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from customer_satisfaction import (
+from network_quality import (
     evaluasi_jaringan, 
     latensi, 
     kecepatan, 

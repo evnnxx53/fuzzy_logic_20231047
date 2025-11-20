@@ -4,60 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnosa Jaringan Fuzzy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <h1>Fuzzy Logic Diagnosa Kualitas Jaringan</h1>
+    <div class="container">
+        <header>
+            <h1>Fuzzy Logic Kualitas Jaringan</h1>
+        </header>
 
-    <hr>
+        <section class="panel">
+            <h3>Input Parameter</h3>
+            <form method="POST" action="/">
+                
+                <div class="form-group">
+                    <label for="latensi">Latensi (Ping)</label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="latensi" name="latensi" min="0" max="300" step="1" value="0" 
+                               oninput="document.getElementById('val_latensi').innerText = this.value">
+                        <span class="range-value"><span id="val_latensi">0</span>&nbsp;ms</span>
+                    </div>
+                </div>
 
-    <h3>Input Parameter</h3>
-    <form method="POST" action="/">
-        
-        <label for="latensi">Latensi (0 - 300 ms):</label><br>
-        <input type="range" id="latensi" name="latensi" min="0" max="300" step="1" value="0" oninput="document.getElementById('val_latensi').innerText = this.value">
-        <span id="val_latensi">0</span> ms
-        <br><br>
+                <div class="form-group">
+                    <label for="kecepatan">Kecepatan Download</label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="kecepatan" name="kecepatan" min="0" max="100" step="1" value="0" 
+                               oninput="document.getElementById('val_kecepatan').innerText = this.value">
+                        <span class="range-value"><span id="val_kecepatan">0</span>&nbsp;Mbps</span>
+                    </div>
+                </div>
 
-        <label for="kecepatan">Kecepatan (0 - 100 Mbps):</label><br>
-        <input type="range" id="kecepatan" name="kecepatan" min="0" max="100" step="1" value="0" oninput="document.getElementById('val_kecepatan').innerText = this.value">
-        <span id="val_kecepatan">0</span> Mbps
-        <br><br>
+                <button type="submit" class="btn-submit">Analisis Jaringan</button>
+            </form>
+        </section>
 
-        <button type="submit">Analisis Jaringan</button>
-    </form>
+        {% if result %}
+            {% if result.error %}
+                <section class="panel">
+                    <p class="error-msg">Error: {{ result.error }}</p>
+                </section>
+            {% else %}
+                <section class="panel result-panel">
+                    <div class="result-header">
+                        <div>
+                            <label>Skor Kualitas Jaringan</label>
+                            <div class="score-badge">{{ result.skor }} <span style="font-size: 1rem; color: #667788;">/ 100</span></div>
+                        </div>
+                        <div class="category-badge bg-{{ result.warna }}">
+                            {{ result.kategori }}
+                        </div>
+                    </div>
 
-    <hr>
+                    <div class="suggestions">
+                        <label>Saran Perbaikan</label>
+                        <ul>
+                            {% for item in result.saran %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
 
-    {% if result %}
-        {% if result.error %}
-            <p style="color: red;">Error: {{ result.error }}</p>
-        {% else %}
-            <h3>Hasil Diagnosa</h3>
-            <p><strong>Kategori:</strong> {{ result.kategori }}</p>
-            <p><strong>Skor:</strong> {{ result.skor }} / 100</p>
+                    <hr>
 
-            <h4>Saran Perbaikan:</h4>
-            <ul>
-                {% for item in result.saran %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-
-            <hr>
-            <h4>Visualisasi Fuzzy:</h4>
-            
-            <p><strong>1. Latensi</strong></p>
-            <img src="data:image/png;base64,{{ result.plot_latensi }}" alt="Grafik Latensi" width="500">
-            
-            <p><strong>2. Kecepatan</strong></p>
-            <img src="data:image/png;base64,{{ result.plot_kecepatan }}" alt="Grafik Kecepatan" width="500">
-            
-            <p><strong>3. Output Kualitas</strong></p>
-            <img src="data:image/png;base64,{{ result.plot_output }}" alt="Grafik Output" width="500">
-            
+                    <label>Visualisasi Fuzzy</label>
+                    <div class="viz-grid">
+                        <div class="viz-item">
+                            <p>1. Latensi</p>
+                            <img src="data:image/png;base64,{{ result.plot_latensi }}" alt="Grafik Latensi">
+                        </div>
+                        
+                        <div class="viz-item">
+                            <p>2. Kecepatan</p>
+                            <img src="data:image/png;base64,{{ result.plot_kecepatan }}" alt="Grafik Kecepatan">
+                        </div>
+                        
+                        <div class="viz-item">
+                            <p>3. Output Kualitas</p>
+                            <img src="data:image/png;base64,{{ result.plot_output }}" alt="Grafik Output">
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
         {% endif %}
-    {% endif %}
+        
+        <footer style="text-align: center; margin-top: 50px; font-size: 0.8rem; color: #445566;">
+            <p>Sistem Logika Fuzzy v1.0 &bull; Menggunakan Python & Flask</p>
+        </footer>
+    </div>
 
 </body>
 </html>
