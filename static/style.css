@@ -36,7 +36,7 @@ h1, h3, h4 {
 h1 {
     text-align: center;
     margin: 0;
-    font-size: 1.7rem;
+    font-size: 1.6rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-shadow: 0 0 10px rgba(189, 0, 255, 0.3);
@@ -180,8 +180,8 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .bg-success { 
-    background-color: var(--accent-primary); 
-    box-shadow: 0 0 10px rgba(189, 0, 255, 0.4);
+    background-color: #2ecc71; 
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
 }
 .bg-warning { background-color: var(--accent-orange); }
 .bg-danger { background-color: var(--accent-red); }

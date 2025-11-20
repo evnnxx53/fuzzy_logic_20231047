@@ -22,6 +22,15 @@ def get_plot_url(variable, input_val=None, is_output=False, simulation=None):
     text_color = '#ffffff'
     accent_color = '#ffffff'
 
+    color_mapping = {
+        'bagus': '#2ecc71',
+        'cepat': '#2ecc71',
+        'sedang': '#ff8000',
+        'cukup': '#ff8000',
+        'buruk': '#00a8ff',
+        'lambat': '#00a8ff'
+    }
+
     fig = plt.gcf()
     fig.set_facecolor(bg_color)
     
@@ -29,23 +38,54 @@ def get_plot_url(variable, input_val=None, is_output=False, simulation=None):
         variable.view(sim=simulation)
         plt.title(f"Output: Kualitas Jaringan (Skor: {input_val:.2f})", color=text_color)
         
+        fill_color = '#00a8ff'
+        if input_val >= 70:
+            fill_color = '#2ecc71'
+        elif input_val >= 45:
+            fill_color = '#ff8000'
+            
         ax = plt.gca()
+        
+        for collection in ax.collections:
+            collection.set_facecolor(fill_color)
+            collection.set_alpha(0.6)
+            
         for line in ax.get_lines():
             if line.get_color() == 'k': 
                 line.set_color(accent_color)
+                line.set_label('Hasil Input')
+                
     else:
         variable.view()
         if input_val is not None:
             plt.vlines(input_val, 0, 1, colors=accent_color, linewidth=3, label='Input User')
             plt.title(f"{variable.label} (Input: {input_val})", color=text_color)
-            
-            legend = plt.legend()
-            legend.get_frame().set_facecolor(bg_color)
-            legend.get_frame().set_edgecolor(text_color)
-            for text in legend.get_texts():
-                text.set_color(text_color)
 
     ax = plt.gca()
+    ax.set_ylabel('') 
+    
+    for line in ax.get_lines():
+        label = line.get_label()
+        if label in color_mapping:
+            line.set_color(color_mapping[label])
+
+    legend_loc = 'upper right'
+    
+    if input_val is not None:
+        mid_point = variable.universe.max() / 2
+        
+        if input_val < mid_point:
+            legend_loc = 'upper right'
+        else:
+            legend_loc = 'upper left'
+
+    legend = plt.legend(loc=legend_loc)
+
+    legend.get_frame().set_facecolor(bg_color)
+    legend.get_frame().set_edgecolor(text_color)
+    for text in legend.get_texts():
+        text.set_color(text_color)
+
     ax.set_facecolor(bg_color)
     ax.tick_params(axis='x', colors=text_color)
     ax.tick_params(axis='y', colors=text_color)
