@@ -18,18 +18,45 @@ app = Flask(__name__)
 def get_plot_url(variable, input_val=None, is_output=False, simulation=None):
     plt.clf()
     
+    bg_color = '#2c3440'
+    text_color = '#ffffff'
+    accent_color = '#ffffff'
+
+    fig = plt.gcf()
+    fig.set_facecolor(bg_color)
+    
     if is_output:
         variable.view(sim=simulation)
-        plt.title(f"Output: Kualitas Jaringan (Skor: {input_val:.2f})")
+        plt.title(f"Output: Kualitas Jaringan (Skor: {input_val:.2f})", color=text_color)
+        
+        ax = plt.gca()
+        for line in ax.get_lines():
+            if line.get_color() == 'k': 
+                line.set_color(accent_color)
     else:
         variable.view()
         if input_val is not None:
-            plt.vlines(input_val, 0, 1, colors='k', linewidth=3, label='Input User')
-            plt.title(f"{variable.label} (Input: {input_val})")
-            plt.legend()
+            plt.vlines(input_val, 0, 1, colors=accent_color, linewidth=3, label='Input User')
+            plt.title(f"{variable.label} (Input: {input_val})", color=text_color)
+            
+            legend = plt.legend()
+            legend.get_frame().set_facecolor(bg_color)
+            legend.get_frame().set_edgecolor(text_color)
+            for text in legend.get_texts():
+                text.set_color(text_color)
+
+    ax = plt.gca()
+    ax.set_facecolor(bg_color)
+    ax.tick_params(axis='x', colors=text_color)
+    ax.tick_params(axis='y', colors=text_color)
+    ax.xaxis.label.set_color(text_color)
+    ax.yaxis.label.set_color(text_color)
+    
+    for spine in ax.spines.values():
+        spine.set_color(text_color)
 
     img = io.BytesIO()
-    plt.savefig(img, format='png', bbox_inches='tight')
+    plt.savefig(img, format='png', bbox_inches='tight', facecolor=bg_color)
     img.seek(0)
     plot_url = base64.b64encode(img.getvalue()).decode()
     return plot_url

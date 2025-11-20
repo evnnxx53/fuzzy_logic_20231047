@@ -7,17 +7,17 @@ latensi = ctrl.Antecedent(np.arange(0, 301, 1), 'latensi')
 kecepatan = ctrl.Antecedent(np.arange(0, 101, 1), 'kecepatan')
 kualitas_jaringan = ctrl.Consequent(np.arange(0, 101, 1), 'kualitas_jaringan')
 
-latensi['bagus'] = fuzz.trimf(latensi.universe, [0, 0, 50])
-latensi['sedang'] = fuzz.trimf(latensi.universe, [30, 100, 170])
-latensi['buruk'] = fuzz.trimf(latensi.universe, [150, 300, 300])
+latensi['bagus'] = fuzz.gbellmf(latensi.universe, 25, 2.5, 0)
+latensi['sedang'] = fuzz.gbellmf(latensi.universe, 35, 2.5, 100)
+latensi['buruk'] = fuzz.gbellmf(latensi.universe, 75, 2.5, 300)
 
-kecepatan['lambat'] = fuzz.trimf(kecepatan.universe, [0, 0, 20])
-kecepatan['sedang'] = fuzz.trimf(kecepatan.universe, [10, 40, 70])
-kecepatan['cepat'] = fuzz.trimf(kecepatan.universe, [60, 100, 100])
+kecepatan['lambat'] = fuzz.gbellmf(kecepatan.universe, 10, 2.5, 0)
+kecepatan['sedang'] = fuzz.gbellmf(kecepatan.universe, 15, 2.5, 40)
+kecepatan['cepat'] = fuzz.gbellmf(kecepatan.universe, 20, 2.5, 100)
 
-kualitas_jaringan['buruk'] = fuzz.trimf(kualitas_jaringan.universe, [0, 0, 50])
-kualitas_jaringan['cukup'] = fuzz.trimf(kualitas_jaringan.universe, [40, 60, 80])
-kualitas_jaringan['bagus'] = fuzz.trimf(kualitas_jaringan.universe, [70, 100, 100])
+kualitas_jaringan['bagus'] = fuzz.gbellmf(kualitas_jaringan.universe, 15, 2.5, 100)
+kualitas_jaringan['cukup'] = fuzz.gbellmf(kualitas_jaringan.universe, 10, 2.5, 60)
+kualitas_jaringan['buruk'] = fuzz.gbellmf(kualitas_jaringan.universe, 25, 2.5, 0)
 
 rule1 = ctrl.Rule(latensi['bagus'] & kecepatan['cepat'], kualitas_jaringan['bagus'])
 rule2 = ctrl.Rule(latensi['bagus'] & kecepatan['sedang'], kualitas_jaringan['cukup'])
@@ -39,7 +39,7 @@ def evaluasi_jaringan(nilai_latensi, nilai_kecepatan):
     return diagnosa_jaringan.output['kualitas_jaringan']
 
 if __name__ == "__main__":
-    print("=== Diagnosa Kualitas Jaringan (Fuzzy Logic) ===")
+    print("=== Diagnosa Kualitas Jaringan (Fuzzy Logic - GBELLMF) ===")
     try:
         input_latensi = float(input("Masukkan Latensi (Ping) dalam ms (0-300): "))
         input_kecepatan = float(input("Masukkan Kecepatan Download dalam Mbps (0-100): "))
@@ -50,26 +50,19 @@ if __name__ == "__main__":
         
         if skor_hasil >= 70:
             print("Hasil: Jaringan SANGAT BAIK")
-            print("Saran: Koneksi optimal. Tidak perlu tindakan perbaikan.")
         elif skor_hasil >= 45:
             print("Hasil: Jaringan CUKUP BAIK")
-            print("Saran: Coba kurangi perangkat yang terhubung atau restart router.")
         else:
             print("Hasil: Jaringan BURUK")
-            print("Saran: Dekatkan perangkat ke router atau hubungi ISP.")
 
         latensi.view()
-        plt.vlines(input_latensi, 0, 1, colors='k', linewidth=3, label='Input User')
-        plt.title(f'Latensi (Input: {input_latensi} ms)')
-        plt.legend()
-
+        plt.title(f'Latensi (Gbellmf)')
+        
         kecepatan.view()
-        plt.vlines(input_kecepatan, 0, 1, colors='k', linewidth=3, label='Input User')
-        plt.title(f'Kecepatan (Input: {input_kecepatan} Mbps)')
-        plt.legend()
-
+        plt.title(f'Kecepatan (Gbellmf)')
+        
         kualitas_jaringan.view(sim=diagnosa_jaringan)
-        plt.title(f'Kualitas Jaringan (Output: {skor_hasil:.2f})')
+        plt.title(f'Output Kualitas (Gbellmf)')
 
         plt.show()
         
