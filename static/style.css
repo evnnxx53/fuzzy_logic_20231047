@@ -90,8 +90,6 @@ label {
     font-size: 1.1rem;
     white-space: nowrap;
     min-width: 80px;
-    
-    /* Flexbox alignment */
     text-align: center;
     display: flex;
     justify-content: center;
@@ -179,10 +177,7 @@ input[type=range]::-webkit-slider-runnable-track {
     color: #fff;
 }
 
-.bg-success { 
-    background-color: #2ecc71; 
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
-}
+.bg-success { background-color: #2ecc71; box-shadow: 0 0 10px rgba(46, 204, 113, 0.4); }
 .bg-warning { background-color: var(--accent-orange); }
 .bg-danger { background-color: var(--accent-red); }
 
@@ -201,39 +196,47 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .viz-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    /* Grid otomatis, tapi minimal lebar 350px agar tidak terlalu kecil */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    /* JARAK ANTAR KARTU DIPERBESAR AGAR TIDAK MEPET */
+    gap: 40px; 
     margin-top: 30px;
 }
 
 .viz-item {
     background: var(--bg-input);
-    padding: 15px;
-    border-radius: 4px;
+    padding: 20px;
+    border-radius: 8px; /* Sudut lebih halus */
     text-align: center;
-    border: 1px solid transparent;
-    transition: border-color 0.3s;
+    /* TAMBAH BORDER AGAR TERLIHAT TERPISAH TEGAS */
+    border: 1px solid #3c4652; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s, border-color 0.3s;
 }
 
 .viz-item:hover {
     border-color: var(--accent-primary);
+    transform: translateY(-2px);
 }
 
 .viz-item p {
     margin-top: 0;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: bold;
     color: var(--text-heading);
     margin-bottom: 15px;
+    border-bottom: 1px solid #445566;
+    padding-bottom: 10px;
 }
 
 .viz-item img {
     max-width: 100%;
     height: auto;
-    border-radius: 2px;
-    border: 1px solid #14181c;
+    border-radius: 4px;
+    /* Border tipis pada gambar itu sendiri */
+    border: 1px solid #14181c; 
 }
 
 .error-msg {

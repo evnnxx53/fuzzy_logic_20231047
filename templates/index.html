@@ -3,36 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnosa Jaringan Fuzzy</title>
+    <title>Early Warning Bullying</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .input-desc {
+            font-size: 0.8rem;
+            color: #99aabb;
+            margin-top: 5px;
+            background: #252b32;
+            padding: 10px;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+        .input-desc span {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .highlight { color: #bd00ff; font-weight: bold; }
+    </style>
 </head>
 <body>
 
     <div class="container">
         <section class="panel">
-            <h1>Fuzzy Logic Kualitas Jaringan</h1>
-            <hr> <h3>Input Parameter</h3>
+            <h1>Fuzzy Logic: Deteksi Dini Bullying</h1>
+            <hr> <h3>Input Parameter Siswa</h3>
             <form method="POST" action="/">
                 
                 <div class="form-group">
-                    <label for="latensi">Latensi (Ping)</label>
+                    <label for="absen">1. Absen Sekolah</label>
                     <div class="slider-wrapper">
-                        <input type="range" id="latensi" name="latensi" min="0" max="300" step="1" value="0" 
-                               oninput="document.getElementById('val_latensi').innerText = this.value">
-                        <span class="range-value"><span id="val_latensi">0</span>&nbsp;ms</span>
+                        <input type="range" id="absen" name="absen" min="1" max="3" step="1" value="1" 
+                               oninput="document.getElementById('val_absen').innerText = this.value">
+                        <span class="range-value"><span id="val_absen">1</span></span>
+                    </div>
+                    <div class="input-desc">
+                        <span><span class="highlight">1 (Rendah):</span> Tidak pernah absen tanpa alasan.</span>
+                        <span><span class="highlight">2 (Sedang):</span> Sekali atau dua kali dan kadang-kadang.</span>
+                        <span><span class="highlight">3 (Tinggi):</span> Seminggu sekali dan beberapa kali seminggu.</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="kecepatan">Kecepatan Download</label>
+                    <label for="interaksi">2. Interaksi Sosial</label>
                     <div class="slider-wrapper">
-                        <input type="range" id="kecepatan" name="kecepatan" min="0" max="100" step="1" value="0" 
-                               oninput="document.getElementById('val_kecepatan').innerText = this.value">
-                        <span class="range-value"><span id="val_kecepatan">0</span>&nbsp;Mbps</span>
+                        <input type="range" id="interaksi" name="interaksi" min="1" max="3" step="1" value="1" 
+                               oninput="document.getElementById('val_interaksi').innerText = this.value">
+                        <span class="range-value"><span id="val_interaksi">1</span></span>
+                    </div>
+                    <div class="input-desc">
+                        <span><span class="highlight">1 (Aktif):</span> Dapat berkomunikasi, bekerja sama, nyaman.</span>
+                        <span><span class="highlight">2 (Normal):</span> Kadang canggung, interaksi ada tapi tidak lancar.</span>
+                        <span><span class="highlight">3 (Pasif):</span> Sulit bicara, takut diabaikan, menyendiri.</span>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Analisis Jaringan</button>
+                <div class="form-group">
+                    <label for="prestasi">3. Prestasi Akademik</label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="prestasi" name="prestasi" min="1" max="3" step="1" value="1" 
+                               oninput="document.getElementById('val_prestasi').innerText = this.value">
+                        <span class="range-value"><span id="val_prestasi">1</span></span>
+                    </div>
+                    <div class="input-desc">
+                        <span><span class="highlight">1 (Tinggi):</span> Nilai di atas KKM dan stabil.</span>
+                        <span><span class="highlight">2 (Sedang):</span> Nilai sekitar KKM, kadang naik turun.</span>
+                        <span><span class="highlight">3 (Rendah):</span> Nilai menurun drastis atau sering di bawah KKM.</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Analisis Risiko</button>
             </form>
         </section>
 
@@ -45,8 +85,8 @@
                 <section class="panel result-panel">
                     <div class="result-header">
                         <div>
-                            <label>Skor Kualitas Jaringan</label>
-                            <div class="score-badge">{{ result.skor }} <span style="font-size: 1rem; color: #667788;">/ 100</span></div>
+                            <label>Tingkat Risiko Bullying</label>
+                            <div class="score-badge">{{ result.skor }} <span style="font-size: 1rem; color: #667788;"></span></div>
                         </div>
                         <div class="category-badge bg-{{ result.warna }}">
                             {{ result.kategori }}
@@ -54,7 +94,7 @@
                     </div>
 
                     <div class="suggestions">
-                        <label>Deskripsi dan saran</label>
+                        <label>Rekomendasi Tindakan</label>
                         <ul>
                             {% for item in result.saran %}
                                 <li>{{ item }}</li>
@@ -64,20 +104,25 @@
 
                     <hr>
 
-                    <label>Visualisasi Fuzzy</label>
+                    <label>Visualisasi Fuzzy (Trapesium)</label>
                     <div class="viz-grid">
                         <div class="viz-item">
-                            <p>1. Latensi</p>
-                            <img src="data:image/png;base64,{{ result.plot_latensi }}" alt="Grafik Latensi">
+                            <p>1. Absen</p>
+                            <img src="data:image/png;base64,{{ result.plot_1 }}" alt="Grafik Absen">
                         </div>
                         
                         <div class="viz-item">
-                            <p>2. Kecepatan</p>
-                            <img src="data:image/png;base64,{{ result.plot_kecepatan }}" alt="Grafik Kecepatan">
+                            <p>2. Interaksi</p>
+                            <img src="data:image/png;base64,{{ result.plot_2 }}" alt="Grafik Interaksi">
+                        </div>
+
+                        <div class="viz-item">
+                            <p>3. Prestasi</p>
+                            <img src="data:image/png;base64,{{ result.plot_3 }}" alt="Grafik Prestasi">
                         </div>
                         
                         <div class="viz-item">
-                            <p>3. Output Kualitas</p>
+                            <p>Output: Risiko</p>
                             <img src="data:image/png;base64,{{ result.plot_output }}" alt="Grafik Output">
                         </div>
                     </div>
