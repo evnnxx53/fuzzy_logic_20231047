@@ -24,7 +24,7 @@ def get_plot_url(variable, input_val=None, is_output=False, simulation=None):
     # Ini membuat jarak horizontal angka 1-2-3 lebih lega
     fig = plt.figure(figsize=(8, 4.5))
     
-    bg_color = '#2c3440'
+    bg_color = '#1e293b'
     text_color = '#ffffff'
     accent_color = '#ffffff'
     
