@@ -3,19 +3,16 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 
-# --- 1. SETUP VARIABEL ---
-# Resolusi ditingkatkan (step 0.1) agar grafik trapesium terlihat halus
 absen = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'absen')
 interaksi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'interaksi')
 prestasi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'prestasi')
 risiko = ctrl.Consequent(np.arange(0, 4.1, 0.1), 'risiko')
 
-# --- 2. FUNGSI KEANGGOTAAN (TRAPESIUM MURNI) ---
 
 # --- Variabel ABSEN ---
 # Rendah (1): Datar dari 0 sampai 1.2
 absen['rendah'] = fuzz.trapmf(absen.universe, [0, 0, 1.2, 1.8])
-# Sedang (2): Datar dari 1.8 sampai 2.2
+# Sedang (2): Datar dari 1.8 sampai 2.2 (Memastikan bentuk Trapesium di tengah)
 absen['sedang'] = fuzz.trapmf(absen.universe, [1.2, 1.8, 2.2, 2.8])
 # Tinggi (3): Datar dari 2.8 sampai 4
 absen['tinggi'] = fuzz.trapmf(absen.universe, [2.2, 2.8, 4, 4])
@@ -36,39 +33,40 @@ risiko['sedang'] = fuzz.trapmf(risiko.universe, [1.2, 1.8, 2.2, 2.8])
 risiko['tinggi'] = fuzz.trapmf(risiko.universe, [2.2, 2.8, 4, 4])
 
 
+# Kelompok Risiko RENDAH
 rule1 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
 rule2 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['sedang'], risiko['rendah'])
-rule3 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['rendah'], risiko['rendah']) 
+rule3 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['rendah'], risiko['sedang'])
 rule4 = ctrl.Rule(absen['rendah'] & interaksi['normal'] & prestasi['tinggi'], risiko['rendah'])
 rule5 = ctrl.Rule(absen['rendah'] & interaksi['normal'] & prestasi['sedang'], risiko['rendah'])
-rule6 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['tinggi'], risiko['rendah']) 
-rule7 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
-rule8 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['sedang'], risiko['rendah'])
-rule9 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['tinggi'], risiko['rendah'])
+rule6 = ctrl.Rule(absen['rendah'] & interaksi['normal'] & prestasi['rendah'], risiko['sedang'])
+rule7 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
+rule8 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['sedang'], risiko['sedang'])
+rule9 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
 
-
-rule10 = ctrl.Rule(absen['rendah'] & interaksi['normal'] & prestasi['rendah'], risiko['sedang'])
-rule11 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['sedang'], risiko['sedang'])
+# Kelompok Risiko SEDANG
+rule10 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
+rule11 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['sedang'], risiko['sedang'])
 rule12 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['rendah'], risiko['sedang'])
-rule13 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['sedang'], risiko['sedang']) 
-rule14 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
-rule15 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['tinggi'], risiko['sedang']) 
-rule16 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['sedang'], risiko['sedang'])
-rule17 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['tinggi'], risiko['sedang'])
-rule18 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
+rule13 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['tinggi'], risiko['sedang'])
+rule14 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['sedang'], risiko['sedang'])
+rule15 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['rendah'], risiko['tinggi'])
+rule16 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
+rule17 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['sedang'], risiko['tinggi'])
+rule18 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
 
-
-rule19 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
-rule20 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['rendah'], risiko['tinggi'])
-rule21 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['sedang'], risiko['tinggi'])
-rule22 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
-rule23 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['rendah'], risiko['tinggi'])
-rule24 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['sedang'], risiko['tinggi'])
-rule25 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['rendah'], risiko['tinggi'])
+# Kelompok Risiko TINGGI
+rule19 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['tinggi'], risiko['sedang'])
+rule20 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['sedang'], risiko['sedang'])
+rule21 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['rendah'], risiko['tinggi'])
+rule22 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['tinggi'], risiko['sedang'])
+rule23 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['sedang'], risiko['tinggi'])
+rule24 = ctrl.Rule(absen['tinggi'] & interaksi['normal'] & prestasi['rendah'], risiko['tinggi'])
+rule25 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['tinggi'], risiko['tinggi'])
 rule26 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['sedang'], risiko['tinggi'])
-rule27 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi']) 
+rule27 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
 
-# --- Control System ---
+# Control System
 bullying_ctrl = ctrl.ControlSystem([
     rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9,
     rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18,
@@ -82,11 +80,8 @@ def evaluasi_risiko(val_absen, val_interaksi, val_prestasi):
     diagnosa_bullying.input['interaksi'] = val_interaksi
     diagnosa_bullying.input['prestasi'] = val_prestasi
     
-    try:
-        diagnosa_bullying.compute()
-        return diagnosa_bullying.output['risiko']
-    except:
-        return 0
+    diagnosa_bullying.compute()
+    return diagnosa_bullying.output['risiko']
 
 if __name__ == "__main__":
     print("=== Diagnosa Risiko Bullying (Fuzzy Logic - Trapezium) ===")
