@@ -3,37 +3,34 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 
-absen = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'absen')
+# === DEFINISI VARIABEL (SAMA SEPERTI SEBELUMNYA) ===
+
+# 1. ABSEN (0 - 20 Kali)
+absen = ctrl.Antecedent(np.arange(0, 21, 1), 'absen')
+absen['rendah'] = fuzz.trapmf(absen.universe, [0, 0, 4, 8])   # Baik
+absen['sedang'] = fuzz.trapmf(absen.universe, [4, 8, 12, 16]) # Waspada
+absen['tinggi'] = fuzz.trapmf(absen.universe, [12, 16, 20, 20]) # Bahaya
+
+# 2. INTERAKSI (Skala 1 - 3)
 interaksi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'interaksi')
-prestasi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'prestasi')
-risiko = ctrl.Consequent(np.arange(0, 4.1, 0.1), 'risiko')
-
-
-# --- Variabel ABSEN ---
-# Rendah (1): Datar dari 0 sampai 1.2
-absen['rendah'] = fuzz.trapmf(absen.universe, [0, 0, 1.2, 1.8])
-# Sedang (2): Datar dari 1.8 sampai 2.2 (Memastikan bentuk Trapesium di tengah)
-absen['sedang'] = fuzz.trapmf(absen.universe, [1.2, 1.8, 2.2, 2.8])
-# Tinggi (3): Datar dari 2.8 sampai 4
-absen['tinggi'] = fuzz.trapmf(absen.universe, [2.2, 2.8, 4, 4])
-
-# --- Variabel INTERAKSI ---
 interaksi['aktif']  = fuzz.trapmf(interaksi.universe, [0, 0, 1.2, 1.8])
 interaksi['normal'] = fuzz.trapmf(interaksi.universe, [1.2, 1.8, 2.2, 2.8])
 interaksi['pasif']  = fuzz.trapmf(interaksi.universe, [2.2, 2.8, 4, 4])
 
-# --- Variabel PRESTASI ---
-prestasi['tinggi'] = fuzz.trapmf(prestasi.universe, [0, 0, 1.2, 1.8])
-prestasi['sedang'] = fuzz.trapmf(prestasi.universe, [1.2, 1.8, 2.2, 2.8])
-prestasi['rendah'] = fuzz.trapmf(prestasi.universe, [2.2, 2.8, 4, 4])
+# 3. PRESTASI (Nilai 0 - 100)
+prestasi = ctrl.Antecedent(np.arange(0, 101, 1), 'prestasi')
+prestasi['rendah'] = fuzz.trapmf(prestasi.universe, [0, 0, 50, 65]) # Buruk
+prestasi['sedang'] = fuzz.trapmf(prestasi.universe, [50, 65, 75, 85])
+prestasi['tinggi'] = fuzz.trapmf(prestasi.universe, [75, 85, 100, 100]) # Baik
 
-# --- Output RISIKO ---
+# === OUTPUT RISIKO ===
+risiko = ctrl.Consequent(np.arange(0, 4.1, 0.1), 'risiko')
 risiko['rendah'] = fuzz.trapmf(risiko.universe, [0, 0, 1.2, 1.8])
 risiko['sedang'] = fuzz.trapmf(risiko.universe, [1.2, 1.8, 2.2, 2.8])
 risiko['tinggi'] = fuzz.trapmf(risiko.universe, [2.2, 2.8, 4, 4])
 
-
-# Kelompok Risiko RENDAH
+# === RULES ===
+# (Daftar rule tetap sama, disingkat disini agar tidak terlalu panjang, tapi pastikan rule1-rule27 ada di file asli Anda)
 rule1 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
 rule2 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['sedang'], risiko['rendah'])
 rule3 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['rendah'], risiko['sedang'])
@@ -43,8 +40,6 @@ rule6 = ctrl.Rule(absen['rendah'] & interaksi['normal'] & prestasi['rendah'], ri
 rule7 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
 rule8 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['sedang'], risiko['sedang'])
 rule9 = ctrl.Rule(absen['rendah'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
-
-# Kelompok Risiko SEDANG
 rule10 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
 rule11 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['sedang'], risiko['sedang'])
 rule12 = ctrl.Rule(absen['sedang'] & interaksi['aktif'] & prestasi['rendah'], risiko['sedang'])
@@ -54,8 +49,6 @@ rule15 = ctrl.Rule(absen['sedang'] & interaksi['normal'] & prestasi['rendah'], r
 rule16 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['tinggi'], risiko['sedang'])
 rule17 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['sedang'], risiko['tinggi'])
 rule18 = ctrl.Rule(absen['sedang'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
-
-# Kelompok Risiko TINGGI
 rule19 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['tinggi'], risiko['sedang'])
 rule20 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['sedang'], risiko['sedang'])
 rule21 = ctrl.Rule(absen['tinggi'] & interaksi['aktif'] & prestasi['rendah'], risiko['tinggi'])
@@ -66,7 +59,6 @@ rule25 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['tinggi'], ri
 rule26 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['sedang'], risiko['tinggi'])
 rule27 = ctrl.Rule(absen['tinggi'] & interaksi['pasif'] & prestasi['rendah'], risiko['tinggi'])
 
-# Control System
 bullying_ctrl = ctrl.ControlSystem([
     rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9,
     rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18,
@@ -79,40 +71,45 @@ def evaluasi_risiko(val_absen, val_interaksi, val_prestasi):
     diagnosa_bullying.input['absen'] = val_absen
     diagnosa_bullying.input['interaksi'] = val_interaksi
     diagnosa_bullying.input['prestasi'] = val_prestasi
-    
     diagnosa_bullying.compute()
     return diagnosa_bullying.output['risiko']
 
-if __name__ == "__main__":
-    print("=== Diagnosa Risiko Bullying (Fuzzy Logic - Trapezium) ===")
-    try:
-        print("\nSkala Input: 1 (Baik/Rendah), 2 (Sedang), 3 (Buruk/Tinggi)")
-        i_absen = float(input("Absen (1-3): "))
-        i_interaksi = float(input("Interaksi (1-3): "))
-        i_prestasi = float(input("Prestasi (1-3): "))
+# === FUNGSI BARU: MENDAPATKAN DETAIL PROSES ===
+def get_fuzzy_details(val_absen, val_interaksi, val_prestasi):
+    # 1. Hitung derajat keanggotaan (Membership Degree) untuk setiap variabel
+    # Ini untuk menentukan input user itu masuk kategori mana (Fuzzifikasi)
+    
+    # Absen
+    mu_absen = {
+        'Rendah (Rajin)': fuzz.interp_membership(absen.universe, absen['rendah'].mf, val_absen),
+        'Sedang': fuzz.interp_membership(absen.universe, absen['sedang'].mf, val_absen),
+        'Tinggi (Sering)': fuzz.interp_membership(absen.universe, absen['tinggi'].mf, val_absen)
+    }
+    cat_absen = max(mu_absen, key=mu_absen.get) # Ambil kategori dengan nilai tertinggi
 
-        hasil = evaluasi_risiko(i_absen, i_interaksi, i_prestasi)
-        hasil_bulat = int(round(hasil))
-        
-        print(f"\nSkor Risiko: {hasil_bulat}")
-        
-        if hasil_bulat == 1:
-            print("Kategori: RISIKO RENDAH")
-        elif hasil_bulat == 2:
-            print("Kategori: RISIKO SEDANG")
-        else:
-            print("Kategori: RISIKO TINGGI")
-        
-        # Plotting
-        absen.view()
-        plt.title('Absen Sekolah (Trapmf)')
-        interaksi.view()
-        plt.title('Interaksi Sosial (Trapmf)')
-        prestasi.view()
-        plt.title('Prestasi Akademik (Trapmf)')
-        risiko.view(sim=diagnosa_bullying)
-        plt.title(f'Output Risiko (Skor: {hasil_bulat})')
-        plt.show()
-        
-    except Exception as e:
-        print(f"Error: {e}")
+    # Interaksi
+    mu_interaksi = {
+        'Aktif': fuzz.interp_membership(interaksi.universe, interaksi['aktif'].mf, val_interaksi),
+        'Normal': fuzz.interp_membership(interaksi.universe, interaksi['normal'].mf, val_interaksi),
+        'Pasif': fuzz.interp_membership(interaksi.universe, interaksi['pasif'].mf, val_interaksi)
+    }
+    cat_interaksi = max(mu_interaksi, key=mu_interaksi.get)
+
+    # Prestasi
+    mu_prestasi = {
+        'Rendah': fuzz.interp_membership(prestasi.universe, prestasi['rendah'].mf, val_prestasi),
+        'Sedang': fuzz.interp_membership(prestasi.universe, prestasi['sedang'].mf, val_prestasi),
+        'Tinggi': fuzz.interp_membership(prestasi.universe, prestasi['tinggi'].mf, val_prestasi)
+    }
+    cat_prestasi = max(mu_prestasi, key=mu_prestasi.get)
+
+    # 2. Susun Kalimat Rule yang Aktif
+    # Logika sederhana: Gabungkan kategori dominan dari ketiga input
+    rule_text = f"JIKA Absen <b>{cat_absen}</b> DAN Interaksi <b>{cat_interaksi}</b> DAN Prestasi <b>{cat_prestasi}</b>"
+
+    return {
+        'cat_absen': cat_absen,
+        'cat_interaksi': cat_interaksi,
+        'cat_prestasi': cat_prestasi,
+        'rule_active': rule_text
+    }

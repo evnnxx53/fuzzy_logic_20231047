@@ -7,6 +7,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .desc-list { text-align: left; margin-top: 5px; font-size: 0.85rem; color: #94a3b8; }
+        .desc-list div { margin-bottom: 4px; }
+        .info-text { font-size: 0.85rem; color: #94a3b8; }
+
+        /* STYLE BARU UNTUK RESUME ALUR */
+        .resume-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .resume-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .flow-step {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .flow-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+        .flow-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .flow-content {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .highlight { color: #facc15; font-weight: bold; }
+        .rule-text { font-family: monospace; color: #a5b4fc; }
+    </style>
 </head>
 <body>
 
@@ -23,21 +77,20 @@
                 </div>
                 
                 <form method="POST" action="/">
-                    
                     <div class="form-group">
                         <div class="label-row">
-                            <label><i class="fas fa-calendar-times"></i> Absen Sekolah</label>
-                            <span class="value-badge" id="val_absen_display">1</span>
+                            <label><i class="fas fa-calendar-times"></i> Absen (Jumlah Ketidakhadiran)</label>
+                            <span class="value-badge" id="val_absen_display">0</span>
                         </div>
-                        <input type="range" id="absen" name="absen" min="1" max="3" step="1" value="1" 
+                        <input type="range" id="absen" name="absen" min="0" max="20" step="1" value="0" 
                                oninput="updateValue('absen', this.value)">
                         <div class="range-labels">
-                            <span>Rendah (1)</span>
-                            <span>Sedang (2)</span>
-                            <span>Tinggi (3)</span>
+                            <span>0 (Rajin)</span>
+                            <span>10</span>
+                            <span>20+ (Sering)</span>
                         </div>
                         <div class="info-box">
-                            <small><i class="fas fa-info-circle"></i> 1: Jarang | 2: Kadang | 3: Sering</small>
+                            <span class="info-text"><i class="fas fa-info-circle"></i> Jumlah ketidakhadiran dalam satu semester.</span>
                         </div>
                     </div>
 
@@ -54,24 +107,28 @@
                             <span>Pasif (3)</span>
                         </div>
                         <div class="info-box">
-                            <small><i class="fas fa-info-circle"></i> 1: Nyaman | 2: Canggung | 3: Menutup Diri</small>
+                            <div class="desc-list">
+                                <div><i class="fas fa-check-circle" style="color: #2ecc71;"></i> <strong>1 (Aktif):</strong> Mudah bergaul, percaya diri.</div>
+                                <div><i class="fas fa-minus-circle" style="color: #f1c40f;"></i> <strong>2 (Normal):</strong> Interaksi seperlunya, kadang canggung.</div>
+                                <div><i class="fas fa-times-circle" style="color: #e74c3c;"></i> <strong>3 (Pasif):</strong> Kurang interaksi, menyendiri.</div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="label-row">
                             <label><i class="fas fa-award"></i> Prestasi Akademik</label>
-                            <span class="value-badge" id="val_prestasi_display">1</span>
+                            <span class="value-badge" id="val_prestasi_display">80</span>
                         </div>
-                        <input type="range" id="prestasi" name="prestasi" min="1" max="3" step="1" value="1" 
+                        <input type="range" id="prestasi" name="prestasi" min="0" max="100" step="1" value="80" 
                                oninput="updateValue('prestasi', this.value)">
                         <div class="range-labels">
-                            <span>Tinggi (1)</span>
-                            <span>Sedang (2)</span>
-                            <span>Rendah (3)</span>
+                            <span>0 (Rendah)</span>
+                            <span>50</span>
+                            <span>100 (Tinggi)</span>
                         </div>
                         <div class="info-box">
-                            <small><i class="fas fa-info-circle"></i> 1: Stabil | 2: Fluktuatif | 3: Menurun</small>
+                            <span class="info-text"><i class="fas fa-info-circle"></i> Nilai rata-rata rapor siswa semester ini.</span>
                         </div>
                     </div>
 
@@ -97,6 +154,36 @@
                             </div>
                         </div>
 
+                        <div class="resume-box">
+                            <div class="resume-title"><i class="fas fa-project-diagram"></i> Resume Alur Diagnosa</div>
+                            
+                            <div class="flow-step">
+                                <span class="flow-label">1. Input & Fuzzifikasi (Penerjemahan Kategori):</span>
+                                <div class="flow-content">
+                                    <ul>
+                                        <li>Absen: <b>{{ result.raw_absen }} Hari</b> &rarr; <span class="highlight">{{ result.cat_absen }}</span></li>
+                                        <li>Interaksi: <b>Skor {{ result.raw_interaksi }}</b> &rarr; <span class="highlight">{{ result.cat_interaksi }}</span></li>
+                                        <li>Prestasi: <b>Nilai {{ result.raw_prestasi }}</b> &rarr; <span class="highlight">{{ result.cat_prestasi }}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <span class="flow-label">2. Rule yang Aktif (Aturan Logika):</span>
+                                <div class="flow-content">
+                                    <span class="rule-text">{{ result.rule_active|safe }}</span> 
+                                    <br>
+                                    <span>MAKA Risiko = <span class="highlight">{{ result.kategori }}</span></span>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <span class="flow-label">3. Hasil Akhir (Defuzzifikasi):</span>
+                                <div class="flow-content">
+                                    Sistem memberikan skor risiko <b>{{ result.skor }}</b> yang berarti <b>{{ result.kategori }}</b>.
+                                </div>
+                            </div>
+                        </div>
                         <div class="suggestions-box">
                             <h4><i class="fas fa-clipboard-check"></i> Rekomendasi Tindakan</h4>
                             <ul>
@@ -138,7 +225,6 @@
         function updateValue(id, val) {
             document.getElementById('val_' + id + '_display').innerText = val;
         }
-        // Set initial values on load (if form resubmitted)
         window.onload = function() {
             const params = ['absen', 'interaksi', 'prestasi'];
             params.forEach(p => {
