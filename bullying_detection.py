@@ -3,34 +3,32 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 
-# === DEFINISI VARIABEL (SAMA SEPERTI SEBELUMNYA) ===
 
 # 1. ABSEN (0 - 20 Kali)
 absen = ctrl.Antecedent(np.arange(0, 21, 1), 'absen')
-absen['rendah'] = fuzz.trapmf(absen.universe, [0, 0, 4, 8])   # Baik
-absen['sedang'] = fuzz.trapmf(absen.universe, [4, 8, 12, 16]) # Waspada
-absen['tinggi'] = fuzz.trapmf(absen.universe, [12, 16, 20, 20]) # Bahaya
+absen['rendah'] = fuzz.trapmf(absen.universe, [0, 0, 4, 5])   
+absen['sedang'] = fuzz.trapmf(absen.universe, [4, 5, 12, 13]) 
+absen['tinggi'] = fuzz.trapmf(absen.universe, [12, 13, 20, 20])
 
 # 2. INTERAKSI (Skala 1 - 3)
-interaksi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'interaksi')
-interaksi['aktif']  = fuzz.trapmf(interaksi.universe, [0, 0, 1.2, 1.8])
-interaksi['normal'] = fuzz.trapmf(interaksi.universe, [1.2, 1.8, 2.2, 2.8])
-interaksi['pasif']  = fuzz.trapmf(interaksi.universe, [2.2, 2.8, 4, 4])
+interaksi = ctrl.Antecedent(np.arange(1, 4, 1), 'interaksi')
+interaksi['aktif']  = fuzz.trapmf(interaksi.universe, [1, 1, 1, 1])
+interaksi['normal'] = fuzz.trapmf(interaksi.universe, [2, 2, 2, 2])
+interaksi['pasif']  = fuzz.trapmf(interaksi.universe, [3, 3, 3, 3])
 
 # 3. PRESTASI (Nilai 0 - 100)
 prestasi = ctrl.Antecedent(np.arange(0, 101, 1), 'prestasi')
-prestasi['rendah'] = fuzz.trapmf(prestasi.universe, [0, 0, 50, 65]) # Buruk
-prestasi['sedang'] = fuzz.trapmf(prestasi.universe, [50, 65, 75, 85])
-prestasi['tinggi'] = fuzz.trapmf(prestasi.universe, [75, 85, 100, 100]) # Baik
+prestasi['rendah'] = fuzz.trapmf(prestasi.universe, [0, 0, 50, 51]) 
+prestasi['sedang'] = fuzz.trapmf(prestasi.universe, [50, 51, 75, 76])
+prestasi['tinggi'] = fuzz.trapmf(prestasi.universe, [75, 76, 100, 100])
 
 # === OUTPUT RISIKO ===
-risiko = ctrl.Consequent(np.arange(0, 4.1, 0.1), 'risiko')
-risiko['rendah'] = fuzz.trapmf(risiko.universe, [0, 0, 1.2, 1.8])
-risiko['sedang'] = fuzz.trapmf(risiko.universe, [1.2, 1.8, 2.2, 2.8])
-risiko['tinggi'] = fuzz.trapmf(risiko.universe, [2.2, 2.8, 4, 4])
+risiko = ctrl.Consequent(np.arange(1, 4, 1), 'risiko')
+risiko['rendah'] = fuzz.trapmf(risiko.universe, [1, 1, 1, 1])
+risiko['sedang'] = fuzz.trapmf(risiko.universe, [2, 2, 2, 2])
+risiko['tinggi'] = fuzz.trapmf(risiko.universe, [3, 3, 3, 3])
 
 # === RULES ===
-# (Daftar rule tetap sama, disingkat disini agar tidak terlalu panjang, tapi pastikan rule1-rule27 ada di file asli Anda)
 rule1 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
 rule2 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['sedang'], risiko['rendah'])
 rule3 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['rendah'], risiko['sedang'])
@@ -81,9 +79,9 @@ def get_fuzzy_details(val_absen, val_interaksi, val_prestasi):
     
     # Absen
     mu_absen = {
-        'Rendah (Rajin)': fuzz.interp_membership(absen.universe, absen['rendah'].mf, val_absen),
+        'Rendah': fuzz.interp_membership(absen.universe, absen['rendah'].mf, val_absen),
         'Sedang': fuzz.interp_membership(absen.universe, absen['sedang'].mf, val_absen),
-        'Tinggi (Sering)': fuzz.interp_membership(absen.universe, absen['tinggi'].mf, val_absen)
+        'Tinggi': fuzz.interp_membership(absen.universe, absen['tinggi'].mf, val_absen)
     }
     cat_absen = max(mu_absen, key=mu_absen.get) # Ambil kategori dengan nilai tertinggi
 
