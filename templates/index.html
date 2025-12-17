@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        /* Style tambahan khusus halaman ini */
         .desc-list { text-align: left; margin-top: 5px; font-size: 0.85rem; color: #94a3b8; }
         .desc-list div { margin-bottom: 4px; }
         .info-text { font-size: 0.85rem; color: #94a3b8; }
 
-        /* STYLE BARU UNTUK RESUME ALUR */
         .resume-box {
             background: rgba(0, 0, 0, 0.3);
             border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -30,34 +30,6 @@
             display: inline-block;
             padding-bottom: 5px;
         }
-        .flow-step {
-            margin-bottom: 15px;
-            position: relative;
-            padding-left: 20px;
-        }
-        .flow-step::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-        .flow-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .flow-content {
-            background: rgba(255,255,255,0.05);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-        }
         .highlight { color: #facc15; font-weight: bold; }
         .rule-text { font-family: monospace; color: #a5b4fc; }
     </style>
@@ -68,12 +40,12 @@
         <div class="container">
             <header class="header-section">
                 <h1><i class="fas fa-brain"></i> Fuzzy Logic System</h1>
-                <p>Deteksi Dini Risiko Bullying Siswa</p>
+                <p>EARLY WARNING BULLYING DISEKOLAH</p>
             </header>
 
             <section class="card input-panel">
                 <div class="card-header">
-                    <h3><i class="fas fa-sliders-h"></i> Input Parameter</h3>
+                    <h3><i class="fas fa-sliders-h"></i> Input Variabel</h3>
                 </div>
                 
                 <form method="POST" action="/">
@@ -84,13 +56,19 @@
                         </div>
                         <input type="range" id="absen" name="absen" min="0" max="20" step="1" value="0" 
                                oninput="updateValue('absen', this.value)">
+                        
                         <div class="range-labels">
                             <span>0 (Rajin)</span>
                             <span>10</span>
                             <span>20+ (Sering)</span>
                         </div>
+
                         <div class="info-box">
-                            <span class="info-text"><i class="fas fa-info-circle"></i> Jumlah ketidakhadiran dalam satu semester.</span>
+                            <div class="desc-list">
+                                <div><i class="fas fa-check-circle"></i> <strong>0-4 (Rendah):</strong> Sangat rajin, jarang absen.</div>
+                                <div><i class="fas fa-minus-circle"></i> <strong>5-12 (Sedang):</strong> Absensi mulai perlu perhatian.</div>
+                                <div><i class="fas fa-times-circle"></i> <strong>13-20 (Tinggi):</strong> Sering bolos, berisiko.</div>
+                            </div>
                         </div>
                     </div>
 
@@ -108,9 +86,9 @@
                         </div>
                         <div class="info-box">
                             <div class="desc-list">
-                                <div><i class="fas fa-check-circle" style="color: #2ecc71;"></i> <strong>1 (Aktif):</strong> Mudah bergaul, percaya diri.</div>
-                                <div><i class="fas fa-minus-circle" style="color: #f1c40f;"></i> <strong>2 (Normal):</strong> Interaksi seperlunya, kadang canggung.</div>
-                                <div><i class="fas fa-times-circle" style="color: #e74c3c;"></i> <strong>3 (Pasif):</strong> Kurang interaksi, menyendiri.</div>
+                                <div><i class="fas fa-check-circle"></i> <strong>1 (Aktif):</strong> Mudah bergaul, percaya diri.</div>
+                                <div><i class="fas fa-minus-circle"></i> <strong>2 (Normal):</strong> Interaksi seperlunya, kadang canggung.</div>
+                                <div><i class="fas fa-times-circle"></i> <strong>3 (Pasif):</strong> Kurang interaksi, menyendiri.</div>
                             </div>
                         </div>
                     </div>
@@ -120,7 +98,7 @@
                             <label><i class="fas fa-award"></i> Prestasi Akademik</label>
                             <span class="value-badge" id="val_prestasi_display">80</span>
                         </div>
-                        <input type="range" id="prestasi" name="prestasi" min="0" max="100" step="1" value="80" 
+                        <input type="range" id="prestasi" name="prestasi" min="0" max="100" step="1" value="0" 
                                oninput="updateValue('prestasi', this.value)">
                         <div class="range-labels">
                             <span>0 (Rendah)</span>
@@ -128,13 +106,25 @@
                             <span>100 (Tinggi)</span>
                         </div>
                         <div class="info-box">
-                            <span class="info-text"><i class="fas fa-info-circle"></i> Nilai rata-rata rapor siswa semester ini.</span>
+                            <div class="desc-list">
+                                <div><i class="fas fa-times-circle"></i> <strong>0-50 (Rendah):</strong> Nilai kurang, butuh bimbingan.</div>
+                                <div><i class="fas fa-minus-circle"></i> <strong>51-75 (Sedang):</strong> Nilai cukup, standar rata-rata.</div>
+                                <div><i class="fas fa-check-circle"></i> <strong>76-100 (Tinggi):</strong> Nilai memuaskan/baik.</div>
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-search-plus"></i> Analisis Risiko
-                    </button>
+                    <div class="btn-group">
+                        {% if not result %}
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-search-plus"></i> Analisis Risiko
+                            </button>
+                        {% else %}
+                            <a href="/" class="btn-reset">
+                                <i class="fas fa-sync-alt"></i> Reset / Analisis Ulang
+                            </a>
+                        {% endif %}
+                    </div>
                 </form>
             </section>
 
@@ -146,42 +136,75 @@
                     </section>
                 {% else %}
                     <section class="card result-panel">
-                        <div class="result-header {{ result.warna }}">
-                            <div class="result-title">Hasil Analisis</div>
-                            <div class="score-display">
-                                <span class="score-number">{{ result.skor }}</span>
-                                <span class="score-cat">{{ result.kategori }}</span>
-                            </div>
-                        </div>
-
+                        
                         <div class="resume-box">
-                            <div class="resume-title"><i class="fas fa-project-diagram"></i> Resume Alur Diagnosa</div>
+                            <div class="resume-title"><i class="fas fa-project-diagram"></i> Hasil Alur Diagnosa</div>
                             
-                            <div class="flow-step">
-                                <span class="flow-label">1. Input & Fuzzifikasi (Penerjemahan Kategori):</span>
-                                <div class="flow-content">
-                                    <ul>
-                                        <li>Absen: <b>{{ result.raw_absen }} Hari</b> &rarr; <span class="highlight">{{ result.cat_absen }}</span></li>
-                                        <li>Interaksi: <b>Skor {{ result.raw_interaksi }}</b> &rarr; <span class="highlight">{{ result.cat_interaksi }}</span></li>
-                                        <li>Prestasi: <b>Nilai {{ result.raw_prestasi }}</b> &rarr; <span class="highlight">{{ result.cat_prestasi }}</span></li>
-                                    </ul>
+                            <div class="resume-grid">
+                                <div class="resume-item">
+                                    <h6>1. Data Input</h6>
+                                    <table class="clean-table">
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Nilai</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Absensi</td>
+                                            <td>{{ result.raw_absen }} Hari</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Interaksi</td>
+                                            <td>Skor {{ result.raw_interaksi }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Prestasi</td>
+                                            <td>Nilai {{ result.raw_prestasi }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </div>
 
-                            <div class="flow-step">
-                                <span class="flow-label">2. Rule yang Aktif (Aturan Logika):</span>
-                                <div class="flow-content">
-                                    <span class="rule-text">{{ result.rule_active|safe }}</span> 
-                                    <br>
-                                    <span>MAKA Risiko = <span class="highlight">{{ result.kategori }}</span></span>
+                                <div class="resume-item">
+                                    <h6>2. Fuzzifikasi (Kategori)</h6>
+                                    <table class="clean-table">
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Absensi</td>
+                                            <td class="highlight">{{ result.cat_absen }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Interaksi</td>
+                                            <td class="highlight">{{ result.cat_interaksi }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Prestasi</td>
+                                            <td class="highlight">{{ result.cat_prestasi }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </div>
 
-                            <div class="flow-step">
-                                <span class="flow-label">3. Hasil Akhir (Defuzzifikasi):</span>
-                                <div class="flow-content">
-                                    Sistem memberikan skor risiko <b>{{ result.skor }}</b> yang berarti <b>{{ result.kategori }}</b>.
+                                <div class="resume-item full-width">
+                                    <h6>3. Evaluasi Rule (Logika)</h6>
+                                    <table class="clean-table">
+                                        <tr>
+                                            <th>Rule yang Aktif</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="rule-text">{{ result.rule_active|safe }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
+
+                                <div class="result-header {{ result.warna }}" style="grid-column: span 2; margin-bottom: 0;">
+                                    <div class="result-title"> Hasil Akhir</div>
+                                    <div class="score-display">
+                                        <span class="score-number">{{ result.skor }}</span>
+                                        <span class="score-cat">{{ result.kategori }}</span>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="suggestions-box">
