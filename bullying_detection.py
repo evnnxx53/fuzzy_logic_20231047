@@ -11,10 +11,10 @@ absen['sedang'] = fuzz.trapmf(absen.universe, [4, 5, 12, 13])
 absen['tinggi'] = fuzz.trapmf(absen.universe, [12, 13, 20, 20])
 
 # 2. INTERAKSI (Skala 1 - 3)
-interaksi = ctrl.Antecedent(np.arange(1, 4, 1), 'interaksi')
-interaksi['aktif']  = fuzz.trapmf(interaksi.universe, [1, 1, 1, 1])
-interaksi['normal'] = fuzz.trapmf(interaksi.universe, [2, 2, 2, 2])
-interaksi['pasif']  = fuzz.trapmf(interaksi.universe, [3, 3, 3, 3])
+interaksi = ctrl.Antecedent(np.arange(0, 4.1, 0.1), 'interaksi')
+interaksi['aktif'] = fuzz.trapmf(interaksi.universe, [0, 0, 1.2, 1.8])
+interaksi['normal'] = fuzz.trapmf(interaksi.universe, [1.2, 1.8, 2.2, 2.8])
+interaksi['pasif'] = fuzz.trapmf(interaksi.universe, [2.2, 2.8, 4, 4])
 
 # 3. PRESTASI (Nilai 0 - 100)
 prestasi = ctrl.Antecedent(np.arange(0, 101, 1), 'prestasi')
@@ -23,10 +23,10 @@ prestasi['sedang'] = fuzz.trapmf(prestasi.universe, [50, 51, 75, 76])
 prestasi['tinggi'] = fuzz.trapmf(prestasi.universe, [75, 76, 100, 100])
 
 # === OUTPUT RISIKO ===
-risiko = ctrl.Consequent(np.arange(1, 4, 1), 'risiko')
-risiko['rendah'] = fuzz.trapmf(risiko.universe, [1, 1, 1, 1])
-risiko['sedang'] = fuzz.trapmf(risiko.universe, [2, 2, 2, 2])
-risiko['tinggi'] = fuzz.trapmf(risiko.universe, [3, 3, 3, 3])
+risiko = ctrl.Consequent(np.arange(0, 4.1, 0.1), 'risiko')
+risiko['rendah'] = fuzz.trapmf(risiko.universe, [0, 0, 1.2, 1.8])
+risiko['sedang'] = fuzz.trapmf(risiko.universe, [1.2, 1.8, 2.2, 2.8])
+risiko['tinggi'] = fuzz.trapmf(risiko.universe, [2.2, 2.8, 4, 4])
 
 # === RULES ===
 rule1 = ctrl.Rule(absen['rendah'] & interaksi['aktif'] & prestasi['tinggi'], risiko['rendah'])
